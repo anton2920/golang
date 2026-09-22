@@ -15,6 +15,7 @@ const (
 	_PROT_EXEC  = 0x4
 
 	_MAP_ANON    = 0x1000
+	_MAP_EXCL    = 0x4000
 	_MAP_PRIVATE = 0x2
 	_MAP_FIXED   = 0x10
 
