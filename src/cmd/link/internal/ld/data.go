@@ -121,7 +121,7 @@ func trampoline(ctxt *Link, s *sym.Symbol) {
 // relocation into an external reloc (to be applied by the external
 // linker). For more on how relocations work in general, see
 //
-//  "Linkers and Loaders", by John R. Levine (Morgan Kaufmann, 1999), ch. 7
+//	"Linkers and Loaders", by John R. Levine (Morgan Kaufmann, 1999), ch. 7
 //
 // This is a performance-critical function for the linker; be careful
 // to avoid introducing unnecessary allocations in the main loop.
@@ -1037,7 +1037,7 @@ func (p *GCProg) AddSym(s *sym.Symbol) {
 	// everything we see should have pointers and should therefore have a type.
 	if typ == nil {
 		switch s.Name {
-		case "runtime.data", "runtime.edata", "runtime.bss", "runtime.ebss":
+		case "runtime.data", "runtime.edata", "runtime.bss", "runtime.ebss", "runtime.framepointer_enabled":
 			// Ignore special symbols that are sometimes laid out
 			// as real symbols. See comment about dyld on darwin in
 			// the address function.
@@ -1839,7 +1839,7 @@ func dodataSect(ctxt *Link, symn sym.SymKind, syms []*sym.Symbol) (result []*sym
 // Non-ELF binary formats are not always flexible enough to
 // give us a place to put the Go build ID. On those systems, we put it
 // at the very beginning of the text segment.
-// This ``header'' is read by cmd/go.
+// This “header” is read by cmd/go.
 func (ctxt *Link) textbuildid() {
 	if ctxt.IsELF || ctxt.BuildMode == BuildModePlugin || *flagBuildid == "" {
 		return

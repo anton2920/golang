@@ -2956,6 +2956,11 @@ func init() {
 			return s.newValue0(ssa.OpGetClosurePtr, s.f.Config.Types.Uintptr)
 		},
 		all...)
+	add("github.com/anton2920/gofa/nostd", "getclosureptr",
+		func(s *state, n *Node, args []*ssa.Value) *ssa.Value {
+			return s.newValue0(ssa.OpGetClosurePtr, s.f.Config.Types.Uintptr)
+		},
+		all...)
 
 	add("runtime", "getcallerpc",
 		func(s *state, n *Node, args []*ssa.Value) *ssa.Value {
