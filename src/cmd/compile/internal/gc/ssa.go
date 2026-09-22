@@ -219,17 +219,17 @@ func dvarint(x *obj.LSym, off int, v int64) int {
 // for stack variables are specified as the number of bytes below varp (pointer to the
 // top of the local variables) for their starting address. The format is:
 //
-//  - Max total argument size among all the defers
-//  - Offset of the deferBits variable
-//  - Number of defers in the function
-//  - Information about each defer call, in reverse order of appearance in the function:
-//    - Total argument size of the call
-//    - Offset of the closure value to call
-//    - Number of arguments (including interface receiver or method receiver as first arg)
-//    - Information about each argument
-//      - Offset of the stored defer argument in this function's frame
-//      - Size of the argument
-//      - Offset of where argument should be placed in the args frame when making call
+//   - Max total argument size among all the defers
+//   - Offset of the deferBits variable
+//   - Number of defers in the function
+//   - Information about each defer call, in reverse order of appearance in the function:
+//   - Total argument size of the call
+//   - Offset of the closure value to call
+//   - Number of arguments (including interface receiver or method receiver as first arg)
+//   - Information about each argument
+//   - Offset of the stored defer argument in this function's frame
+//   - Size of the argument
+//   - Offset of where argument should be placed in the args frame when making call
 func (s *state) emitOpenDeferInfo() {
 	x := Ctxt.Lookup(s.curfn.Func.lsym.Name + ".opendefer")
 	s.curfn.Func.lsym.Func.OpenCodedDeferInfo = x
@@ -3285,6 +3285,11 @@ func init() {
 		},
 		all...)
 	add("runtime", "getclosureptr",
+		func(s *state, n *Node, args []*ssa.Value) *ssa.Value {
+			return s.newValue0(ssa.OpGetClosurePtr, s.f.Config.Types.Uintptr)
+		},
+		all...)
+	add("github.com/anton2920/gofa/nostd", "getclosureptr",
 		func(s *state, n *Node, args []*ssa.Value) *ssa.Value {
 			return s.newValue0(ssa.OpGetClosurePtr, s.f.Config.Types.Uintptr)
 		},

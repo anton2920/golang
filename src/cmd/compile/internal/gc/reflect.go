@@ -803,6 +803,7 @@ func typeptrdata(t *types.Type) int64 {
 // tflag is documented in reflect/type.go.
 //
 // tflag values must be kept in sync with copies in:
+//
 //	cmd/compile/internal/gc/reflect.go
 //	cmd/link/internal/ld/decodesym.go
 //	reflect/type.go
@@ -1165,7 +1166,7 @@ func dtypesym(t *types.Type) *obj.LSym {
 		dupok = obj.DUPOK
 	}
 
-	if myimportpath != "runtime" || (tbase != types.Types[tbase.Etype] && tbase != types.Bytetype && tbase != types.Runetype && tbase != types.Errortype) { // int, float, etc
+	if (!compiling_runtime) || ((myimportpath != "runtime") && (myimportpath != "github.com/anton2920/gofa/nostd")) || (tbase != types.Types[tbase.Etype] && tbase != types.Bytetype && tbase != types.Runetype && tbase != types.Errortype) { // int, float, etc
 		// named types from other files are defined only by those files
 		if tbase.Sym != nil && tbase.Sym.Pkg != localpkg {
 			return lsym
@@ -1595,7 +1596,7 @@ func dumpbasictypes() {
 	// so this is as good as any.
 	// another possible choice would be package main,
 	// but using runtime means fewer copies in object files.
-	if myimportpath == "runtime" {
+	if (compiling_runtime) && ((myimportpath == "runtime") || (myimportpath == "github.com/anton2920/gofa/nostd")) {
 		for i := types.EType(1); i <= TBOOL; i++ {
 			dtypesym(types.NewPtr(types.Types[i]))
 		}
@@ -1683,7 +1684,6 @@ func (a typesByString) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
 // use bitmaps for objects up to 64 kB in size.
 //
 // Also known to reflect/type.go.
-//
 const maxPtrmaskBytes = 2048
 
 // dgcsym emits and returns a data symbol containing GC information for type t,
