@@ -12,6 +12,7 @@ import (
 
 // Don't split the stack as this function may be invoked without a valid G,
 // which prevents us from allocating more stack.
+//
 //go:nosplit
 func sysAlloc(n uintptr, sysStat *uint64) unsafe.Pointer {
 	v, err := mmap(nil, n, _PROT_READ|_PROT_WRITE, _MAP_ANON|_MAP_PRIVATE, -1, 0)
@@ -31,6 +32,7 @@ func sysUsed(v unsafe.Pointer, n uintptr) {
 
 // Don't split the stack as this function may be invoked without a valid G,
 // which prevents us from allocating more stack.
+//
 //go:nosplit
 func sysFree(v unsafe.Pointer, n uintptr, sysStat *uint64) {
 	mSysStatDec(sysStat, n)
@@ -42,7 +44,7 @@ func sysFault(v unsafe.Pointer, n uintptr) {
 }
 
 func sysReserve(v unsafe.Pointer, n uintptr) unsafe.Pointer {
-	flags := int32(_MAP_ANON | _MAP_PRIVATE)
+	flags := int32(_MAP_ANON | _MAP_PRIVATE | _MAP_FIXED | _MAP_EXCL)
 	if raceenabled && GOOS == "darwin" {
 		// Currently the race detector expects memory to live within a certain
 		// range, and on Darwin 10.10 mmap is prone to ignoring hints, moreso
