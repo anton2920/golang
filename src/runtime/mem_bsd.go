@@ -13,6 +13,7 @@ import (
 
 // Don't split the stack as this function may be invoked without a valid G,
 // which prevents us from allocating more stack.
+//
 //go:nosplit
 func sysAlloc(n uintptr, sysStat *uint64) unsafe.Pointer {
 	v := mmap(nil, n, _PROT_READ|_PROT_WRITE, _MAP_ANON|_MAP_PRIVATE, -1, 0)
@@ -32,6 +33,7 @@ func sysUsed(v unsafe.Pointer, n uintptr) {
 
 // Don't split the stack as this function may be invoked without a valid G,
 // which prevents us from allocating more stack.
+//
 //go:nosplit
 func sysFree(v unsafe.Pointer, n uintptr, sysStat *uint64) {
 	mSysStatDec(sysStat, n)
@@ -51,7 +53,7 @@ func sysReserve(v unsafe.Pointer, n uintptr, reserved *bool) unsafe.Pointer {
 		return v
 	}
 
-	p := mmap(v, n, _PROT_NONE, _MAP_ANON|_MAP_PRIVATE, -1, 0)
+	p := mmap(v, n, _PROT_NONE, _MAP_ANON|_MAP_PRIVATE|_MAP_FIXED|_MAP_EXCL, -1, 0)
 	if uintptr(p) < 4096 {
 		return nil
 	}
@@ -67,7 +69,7 @@ func sysMap(v unsafe.Pointer, n uintptr, reserved bool, sysStat *uint64) {
 
 	// On 64-bit, we don't actually have v reserved, so tread carefully.
 	if !reserved {
-		flags := int32(_MAP_ANON | _MAP_PRIVATE)
+		flags := int32(_MAP_ANON | _MAP_PRIVATE | _MAP_EXCL | _MAP_FIXED)
 		if GOOS == "dragonfly" {
 			// TODO(jsing): For some reason DragonFly seems to return
 			// memory at a different address than we requested, even when
