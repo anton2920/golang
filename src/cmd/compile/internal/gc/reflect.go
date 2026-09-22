@@ -989,7 +989,7 @@ func dtypesym(t *Type) *Sym {
 		dupok = obj.DUPOK
 	}
 
-	if ((myimportpath == "runtime") || (myimportpath == "github.com/anton2920/gofa/nostd")) && (tbase == Types[tbase.Etype] || tbase == bytetype || tbase == runetype || tbase == errortype) { // int, float, etc
+	if ((compiling_runtime != 0) && ((myimportpath == "runtime") || (myimportpath == "github.com/anton2920/gofa/nostd"))) && (tbase == Types[tbase.Etype] || tbase == bytetype || tbase == runetype || tbase == errortype) { // int, float, etc
 		goto ok
 	}
 
@@ -1266,7 +1266,7 @@ func dumptypestructs() {
 	// so this is as good as any.
 	// another possible choice would be package main,
 	// but using runtime means fewer copies in .6 files.
-	if (myimportpath == "runtime") || (myimportpath == "github.com/anton2920/gofa/nostd") {
+	if (compiling_runtime != 0) && ((myimportpath == "runtime") || (myimportpath == "github.com/anton2920/gofa/nostd")) {
 		for i := EType(1); i <= TBOOL; i++ {
 			dtypesym(Ptrto(Types[i]))
 		}
