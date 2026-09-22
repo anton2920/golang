@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build ignore
 // +build ignore
 
 /*
@@ -41,6 +42,7 @@ const (
 	PROT_EXEC  = C.PROT_EXEC
 
 	MAP_ANON    = C.MAP_ANON
+	MAP_EXCL    = C.MAP_EXCL
 	MAP_PRIVATE = C.MAP_PRIVATE
 	MAP_FIXED   = C.MAP_FIXED
 
