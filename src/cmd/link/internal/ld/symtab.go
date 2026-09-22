@@ -574,7 +574,12 @@ func symtab() {
 	// creating the moduledata from scratch and it does not have a
 	// compiler-provided size, so read it from the type data.
 	moduledatatype := Linkrlookup(Ctxt, "type.runtime.moduledata", 0)
-	moduledata.Size = decodetype_size(moduledatatype)
+	if moduledatatype == nil {
+		/* TODO(anton2920): this number should be taken from previous 'module.Size'. */
+		moduledata.Size = 1024
+	} else {
+		moduledata.Size = decodetype_size(moduledatatype)
+	}
 	Symgrow(Ctxt, moduledata, moduledata.Size)
 
 	lastmoduledatap := Linklookup(Ctxt, "runtime.lastmoduledatap", 0)

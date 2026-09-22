@@ -69,8 +69,8 @@ const (
 	MAXVALSIZE = 128
 )
 
-func structfieldSize() int       { return 3 * Widthptr } // Sizeof(runtime.structfield{})
-func imethodSize() int           { return 4 + 4 }        // Sizeof(runtime.imethod{})
+func structfieldSize() int { return 3 * Widthptr } // Sizeof(runtime.structfield{})
+func imethodSize() int     { return 4 + 4 }        // Sizeof(runtime.imethod{})
 func uncommonSize(t *Type) int { // Sizeof(runtime.uncommontype{})
 	if t.Sym == nil && len(methods(t)) == 0 {
 		return 0
@@ -792,6 +792,7 @@ func typeptrdata(t *Type) int64 {
 // tflag is documented in reflect/type.go.
 //
 // tflag values must be kept in sync with copies in:
+//
 //	cmd/compile/internal/gc/reflect.go
 //	cmd/link/internal/ld/decodesym.go
 //	reflect/type.go
@@ -1119,7 +1120,7 @@ func dtypesym(t *Type) *Sym {
 		dupok = obj.DUPOK
 	}
 
-	if myimportpath == "runtime" && (tbase == Types[tbase.Etype] || tbase == bytetype || tbase == runetype || tbase == errortype) { // int, float, etc
+	if ((compiling_runtime) && ((myimportpath == "runtime") || (myimportpath == "github.com/anton2920/gofa/nostd"))) && (tbase == Types[tbase.Etype] || tbase == bytetype || tbase == runetype || tbase == errortype) { // int, float, etc
 		goto ok
 	}
 
@@ -1414,7 +1415,7 @@ func dumptypestructs() {
 	// so this is as good as any.
 	// another possible choice would be package main,
 	// but using runtime means fewer copies in .6 files.
-	if myimportpath == "runtime" {
+	if (compiling_runtime) && ((myimportpath == "runtime") || (myimportpath == "github.com/anton2920/gofa/nostd")) {
 		for i := EType(1); i <= TBOOL; i++ {
 			dtypesym(Ptrto(Types[i]))
 		}
@@ -1545,7 +1546,6 @@ func dalgsym(t *Type) *Sym {
 // use bitmaps for objects up to 64 kB in size.
 //
 // Also known to reflect/type.go.
-//
 const maxPtrmaskBytes = 2048
 
 // dgcsym emits and returns a data symbol containing GC information for type t,
