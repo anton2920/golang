@@ -697,7 +697,12 @@ func (ctxt *Link) symtab() []sym.SymKind {
 	// creating the moduledata from scratch and it does not have a
 	// compiler-provided size, so read it from the type data.
 	moduledatatype := ldr.Lookup("type.runtime.moduledata", 0)
-	moduledata.SetSize(decodetypeSize(ctxt.Arch, ldr.Data(moduledatatype)))
+	if data := ldr.Data(moduledatatype); data != nil {
+		moduledata.SetSize(decodetypeSize(ctxt.Arch, data))
+	} else {
+		/* TODO(anton2920): this number should be taken from previous 'moduledata.Size'. */
+		moduledata.SetSize(1024)
+	}
 	moduledata.Grow(moduledata.Size())
 
 	lastmoduledatap := ldr.CreateSymForUpdate("runtime.lastmoduledatap", 0)
