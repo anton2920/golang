@@ -1392,7 +1392,7 @@ func WriteBasicTypes() {
 	// so this is as good as any.
 	// another possible choice would be package main,
 	// but using runtime means fewer copies in object files.
-	if base.Ctxt.Pkgpath == "runtime" {
+	if (base.Flag.CompilingRuntime) && ((base.Ctxt.Pkgpath == "runtime") || (base.Ctxt.Pkgpath == "github.com/anton2920/gofa/nostd")) {
 		for i := types.Kind(1); i <= types.TBOOL; i++ {
 			writeType(types.NewPtr(types.Types[i]))
 		}
@@ -1754,7 +1754,7 @@ func NeedEmit(typ *types.Type) bool {
 		// Local defined type; our responsibility.
 		return true
 
-	case base.Ctxt.Pkgpath == "runtime" && (sym.Pkg == types.BuiltinPkg || sym.Pkg == types.UnsafePkg):
+	case (base.Flag.CompilingRuntime) && ((base.Ctxt.Pkgpath == "runtime") || (base.Ctxt.Pkgpath == "github.com/anton2920/gofa/nostd")) && (sym.Pkg == types.BuiltinPkg || sym.Pkg == types.UnsafePkg):
 		// Package runtime is responsible for including code for builtin
 		// types (predeclared and package unsafe).
 		return true
