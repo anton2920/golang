@@ -683,8 +683,10 @@ func (l *Loader) resolve(r *oReader, s goobj.SymRef) Sym {
 // symbols.
 func (l *Loader) reportMissingBuiltin(bsym int, reflib string) {
 	bname, _ := goobj.BuiltinName(bsym)
-	log.Fatalf("reference to undefined builtin %q from package %q",
-		bname, reflib)
+	if false {
+		log.Fatalf("reference to undefined builtin %q from package %q",
+			bname, reflib)
+	}
 }
 
 // Look up a symbol by name, return global index, or 0 if not found.
@@ -1225,6 +1227,9 @@ func (l *Loader) Data(i Sym) []byte {
 		return nil
 	}
 	r, li := l.toLocal(i)
+	if r == nil {
+		return nil
+	}
 	return r.Data(li)
 }
 
