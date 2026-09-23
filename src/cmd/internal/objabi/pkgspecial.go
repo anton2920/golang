@@ -57,6 +57,8 @@ var runtimePkgs = []string{
 	"internal/godebugs",
 	"internal/goexperiment",
 	"internal/goos",
+
+	"github.com/anton2920/gofa/nostd",
 }
 
 // extraNoInstrumentPkgs is the set of packages in addition to runtimePkgs that
@@ -83,6 +85,7 @@ var allowAsmABIPkgs = []string{
 	"internal/chacha8rand",
 	"runtime/internal/syscall",
 	"runtime/internal/startlinetest",
+	"github.com/anton2920/gofa/nostd",
 }
 
 var (

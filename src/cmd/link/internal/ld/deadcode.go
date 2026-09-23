@@ -205,6 +205,7 @@ func (d *deadcodePass) flood() {
 					rs = decodeItabType(d.ldr, d.ctxt.Arch, rs)
 				}
 				if !d.ldr.IsGoType(rs) && !d.ctxt.linkShared {
+					continue
 					panic(fmt.Sprintf("R_USEIFACE in %s references %s which is not a type or itab", d.ldr.SymName(symIdx), d.ldr.SymName(rs)))
 				}
 				if !d.ldr.AttrUsedInIface(rs) {
