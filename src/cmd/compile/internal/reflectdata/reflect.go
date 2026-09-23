@@ -1152,7 +1152,7 @@ func WriteBasicTypes() {
 	// another possible choice would be package main,
 	// but using runtime means fewer copies in object files.
 	// The code here needs to be in sync with writtenByWriteBasicTypes above.
-	if base.Ctxt.Pkgpath != "runtime" {
+	if (!base.Flag.CompilingRuntime) || ((base.Ctxt.Pkgpath != "runtime") && (base.Ctxt.Pkgpath != "github.com/anton2920/gofa/nostd")) {
 		return
 	}
 
@@ -1339,7 +1339,7 @@ func NeedEmit(typ *types.Type) bool {
 
 	switch sym := typ.Sym(); {
 	case writtenByWriteBasicTypes(typ):
-		return base.Ctxt.Pkgpath == "runtime"
+		return (base.Flag.CompilingRuntime) && ((base.Ctxt.Pkgpath == "runtime") || (base.Ctxt.Pkgpath == "github.com/anton2920/gofa/nostd"))
 
 	case sym == nil:
 		// Anonymous type; possibly never seen before or ever again.

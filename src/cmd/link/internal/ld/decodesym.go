@@ -43,11 +43,17 @@ func decodetypeKind(arch *sys.Arch, p []byte) abi.Kind {
 
 // Type.commonType.size
 func decodetypeSize(arch *sys.Arch, p []byte) int64 {
+	if p == nil {
+		return 0
+	}
 	return int64(decodeInuxi(arch, p, arch.PtrSize)) // 0x8 / 0x10
 }
 
 // Type.commonType.ptrdata
 func decodetypePtrdata(arch *sys.Arch, p []byte) int64 {
+	if p == nil {
+		return 0
+	}
 	return int64(decodeInuxi(arch, p[arch.PtrSize:], arch.PtrSize)) // 0x8 / 0x10
 }
 
