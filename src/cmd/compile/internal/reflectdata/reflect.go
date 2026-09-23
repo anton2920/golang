@@ -667,6 +667,7 @@ var kinds = []int{
 // tflag is documented in reflect/type.go.
 //
 // tflag values must be kept in sync with copies in:
+//
 //	cmd/compile/internal/reflectdata/reflect.go
 //	cmd/link/internal/ld/decodesym.go
 //	reflect/type.go
@@ -1391,7 +1392,7 @@ func WriteBasicTypes() {
 	// so this is as good as any.
 	// another possible choice would be package main,
 	// but using runtime means fewer copies in object files.
-	if base.Ctxt.Pkgpath == "runtime" {
+	if (base.Flag.CompilingRuntime) && ((base.Ctxt.Pkgpath == "runtime") || (base.Ctxt.Pkgpath == "github.com/anton2920/gofa/nostd")) {
 		for i := types.Kind(1); i <= types.TBOOL; i++ {
 			writeType(types.NewPtr(types.Types[i]))
 		}
@@ -1495,7 +1496,6 @@ func (a typesByString) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
 // use bitmaps for objects up to 64 kB in size.
 //
 // Also known to reflect/type.go.
-//
 const maxPtrmaskBytes = 2048
 
 // GCSym returns a data symbol containing GC information for type t, along
@@ -1745,7 +1745,7 @@ func NeedEmit(typ *types.Type) bool {
 		// Local defined type; our responsibility.
 		return true
 
-	case base.Ctxt.Pkgpath == "runtime" && (sym.Pkg == types.BuiltinPkg || sym.Pkg == types.UnsafePkg):
+	case (base.Flag.CompilingRuntime) && ((base.Ctxt.Pkgpath == "runtime") || (base.Ctxt.Pkgpath == "github.com/anton2920/gofa/nostd")) && (sym.Pkg == types.BuiltinPkg || sym.Pkg == types.UnsafePkg):
 		// Package runtime is responsible for including code for builtin
 		// types (predeclared and package unsafe).
 		return true
@@ -1790,13 +1790,17 @@ func NeedEmit(typ *types.Type) bool {
 // Also wraps methods on instantiated generic types for use in itab entries.
 // For an instantiated generic type G[int], we generate wrappers like:
 // G[int] pointer shaped:
+//
 //	func (x G[int]) f(arg) {
 //		.inst.G[int].f(dictionary, x, arg)
-// 	}
+//	}
+//
 // G[int] not pointer shaped:
+//
 //	func (x *G[int]) f(arg) {
 //		.inst.G[int].f(dictionary, *x, arg)
-// 	}
+//	}
+//
 // These wrappers are always fully stenciled.
 func methodWrapper(rcvr *types.Type, method *types.Field, forItab bool) *obj.LSym {
 	orig := rcvr
