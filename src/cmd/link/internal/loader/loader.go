@@ -167,21 +167,21 @@ type symAndSize struct {
 //
 // Notes on the layout of global symbol index space:
 //
-// - Go object files are read before host object files; each Go object
-//   read adds its defined package symbols to the global index space.
-//   Nonpackage symbols are not yet added.
+//   - Go object files are read before host object files; each Go object
+//     read adds its defined package symbols to the global index space.
+//     Nonpackage symbols are not yet added.
 //
-// - In loader.LoadNonpkgSyms, add non-package defined symbols and
-//   references in all object files to the global index space.
+//   - In loader.LoadNonpkgSyms, add non-package defined symbols and
+//     references in all object files to the global index space.
 //
-// - Host object file loading happens; the host object loader does a
-//   name/version lookup for each symbol it finds; this can wind up
-//   extending the external symbol index space range. The host object
-//   loader stores symbol payloads in loader.payloads using SymbolBuilder.
+//   - Host object file loading happens; the host object loader does a
+//     name/version lookup for each symbol it finds; this can wind up
+//     extending the external symbol index space range. The host object
+//     loader stores symbol payloads in loader.payloads using SymbolBuilder.
 //
-// - Each symbol gets a unique global index. For duplicated and
-//   overwriting/overwritten symbols, the second (or later) appearance
-//   of the symbol gets the same global index as the first appearance.
+//   - Each symbol gets a unique global index. For duplicated and
+//     overwriting/overwritten symbols, the second (or later) appearance
+//     of the symbol gets the same global index as the first appearance.
 type Loader struct {
 	start       map[*oReader]Sym // map from object file to its start index
 	objs        []objIdx         // sorted by start index (i.e. objIdx.i)
@@ -675,7 +675,7 @@ func (l *Loader) resolve(r *oReader, s goobj.SymRef) Sym {
 // when the runtime package is built. The canonical example is
 // "runtime.racefuncenter" -- currently if you do something like
 //
-//    go build -gcflags=-race myprogram.go
+//	go build -gcflags=-race myprogram.go
 //
 // the compiler will insert calls to the builtin runtime.racefuncenter,
 // but the version of the runtime used for linkage won't actually contain
@@ -689,8 +689,10 @@ func (l *Loader) resolve(r *oReader, s goobj.SymRef) Sym {
 // symbols.
 func (l *Loader) reportMissingBuiltin(bsym int, reflib string) {
 	bname, _ := goobj.BuiltinName(bsym)
-	log.Fatalf("reference to undefined builtin %q from package %q",
-		bname, reflib)
+	if false {
+		log.Fatalf("reference to undefined builtin %q from package %q",
+			bname, reflib)
+	}
 }
 
 // Look up a symbol by name, return global index, or 0 if not found.
@@ -1252,6 +1254,9 @@ func (l *Loader) Data(i Sym) []byte {
 		return nil
 	}
 	r, li := l.toLocal(i)
+	if r == nil {
+		return nil
+	}
 	return r.Data(li)
 }
 
@@ -2629,7 +2634,6 @@ type ErrorReporter struct {
 //
 // Logging an error means that on exit cmd/link will delete any
 // output file and return a non-zero error code.
-//
 func (reporter *ErrorReporter) Errorf(s Sym, format string, args ...interface{}) {
 	if s != 0 && reporter.ldr.SymName(s) != "" {
 		format = reporter.ldr.SymName(s) + ": " + format

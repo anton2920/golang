@@ -669,6 +669,7 @@ var kinds = []int{
 // tflag is documented in reflect/type.go.
 //
 // tflag values must be kept in sync with copies in:
+//
 //	cmd/compile/internal/reflectdata/reflect.go
 //	cmd/link/internal/ld/decodesym.go
 //	reflect/type.go
@@ -950,7 +951,7 @@ func writeType(t *types.Type) *obj.LSym {
 		dupok = obj.DUPOK
 	}
 
-	if base.Ctxt.Pkgpath != "runtime" || (tbase != types.Types[tbase.Kind()] && tbase != types.ByteType && tbase != types.RuneType && tbase != types.ErrorType) { // int, float, etc
+	if (!base.Flag.CompilingRuntime) || ((base.Ctxt.Pkgpath != "runtime") && (base.Ctxt.Pkgpath != "github.com/anton2920/gofa/nostd")) || (tbase != types.Types[tbase.Kind()] && tbase != types.ByteType && tbase != types.RuneType && tbase != types.ErrorType) { // int, float, etc
 		// named types from other files are defined only by those files
 		if tbase.Sym() != nil && tbase.Sym().Pkg != types.LocalPkg {
 			if i := typecheck.BaseTypeIndex(t); i >= 0 {
@@ -1420,7 +1421,7 @@ func WriteBasicTypes() {
 	// so this is as good as any.
 	// another possible choice would be package main,
 	// but using runtime means fewer copies in object files.
-	if base.Ctxt.Pkgpath == "runtime" {
+	if (base.Flag.CompilingRuntime) && ((base.Ctxt.Pkgpath == "runtime") || (base.Ctxt.Pkgpath == "github.com/anton2920/gofa/nostd")) {
 		for i := types.Kind(1); i <= types.TBOOL; i++ {
 			writeType(types.NewPtr(types.Types[i]))
 		}
@@ -1513,7 +1514,6 @@ func (a typesByString) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
 // use bitmaps for objects up to 64 kB in size.
 //
 // Also known to reflect/type.go.
-//
 const maxPtrmaskBytes = 2048
 
 // GCSym returns a data symbol containing GC information for type t, along
