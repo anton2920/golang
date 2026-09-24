@@ -1046,6 +1046,8 @@ const sizeSpecializedMallocEnabled = goexperiment.SizeSpecializedMalloc && GOOS 
 // there might not be any canned tests in tree for Go's integration with Valgrind.
 const runtimeFreegcEnabled = goexperiment.RuntimeFreegc && !asanenabled && !msanenabled && !valgrindenabled
 
+var AllocationsAreDisabled bool
+
 // Allocate an object of size bytes.
 // Small objects are allocated from the per-P cache's free lists.
 // Large objects (> 32 kB) are allocated straight from the heap.
@@ -1065,6 +1067,10 @@ const runtimeFreegcEnabled = goexperiment.RuntimeFreegc && !asanenabled && !msan
 //
 //go:linkname mallocgc
 func mallocgc(size uintptr, typ *_type, needzero bool) unsafe.Pointer {
+	if AllocationsAreDisabled {
+		throw("Allocations are disabled!")
+	}
+
 	if doubleCheckMalloc {
 		if gcphase == _GCmarktermination {
 			throw("mallocgc called with gcphase == _GCmarktermination")
