@@ -72,6 +72,8 @@ var runtimePkgs = []string{
 	"internal/profilerecord",
 	"internal/strconv",
 	"internal/stringslite",
+
+	"github.com/anton2920/gofa/nostd",
 }
 
 // extraNoInstrumentPkgs is the set of packages in addition to runtimePkgs that
@@ -100,6 +102,7 @@ var allowAsmABIPkgs = []string{
 	"internal/runtime/syscall/windows",
 	"internal/runtime/startlinetest",
 	"internal/runtime/maps",
+	"github.com/anton2920/gofa/nostd",
 }
 
 // LookupPkgSpecial returns special build properties for the given package path.

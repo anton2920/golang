@@ -474,9 +474,6 @@ func loadinternal(ctxt *Link, name string) *sym.Library {
 		}
 	}
 
-	if name == "runtime" {
-		Exitf("error: unable to find runtime.a")
-	}
 	ctxt.Logf("warning: unable to find %s.a\n", name)
 	return nil
 }
