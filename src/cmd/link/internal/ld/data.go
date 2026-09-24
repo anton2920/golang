@@ -1405,6 +1405,7 @@ func (p *GCProg) AddType(off int64, typ loader.Sym) {
 	typData := ldr.Data(typ)
 	ptrdata := decodetypePtrdata(p.ctxt.Arch, typData)
 	if ptrdata == 0 {
+		return
 		p.ctxt.Errorf(p.sym.Sym(), "has no pointers but in data section")
 		// TODO: just skip these? They might occur in assembly
 		// that doesn't know to use NOPTR? But there must have been
