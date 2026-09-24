@@ -392,6 +392,8 @@ var (
 	heapRandSeedBitsRemaining int
 )
 
+var AllocationsAreDisabled bool
+
 func nextHeapRandBits(bits int) uintptr {
 	if bits > heapRandSeedBitsRemaining {
 		throw("not enough heapRandSeed bits remaining")
@@ -1065,6 +1067,10 @@ const runtimeFreegcEnabled = goexperiment.RuntimeFreegc && !asanenabled && !msan
 //
 //go:linkname mallocgc
 func mallocgc(size uintptr, typ *_type, needzero bool) unsafe.Pointer {
+	if AllocationsAreDisabled {
+		throw("Allocations are disabled!")
+	}
+
 	if doubleCheckMalloc {
 		if gcphase == _GCmarktermination {
 			throw("mallocgc called with gcphase == _GCmarktermination")
